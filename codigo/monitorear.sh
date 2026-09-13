@@ -54,13 +54,6 @@ select opcion in "Monitorear memoria RAM" \
                  "Buscar archivos grandes" \
                  "Espacio en particiones" \
                  "Salir"; do
-    # Un Ctrl-D deja REPLY vacío y select repetiría el menú para siempre
-    if [ -z "${REPLY}" ]; then
-        echo
-        echo "Entrada cerrada. Hasta luego, ${ALUMNO} (legajo ${LEGAJO})."
-        break
-    fi
-
     # El case va sobre el texto y no sobre el número: sobrevive a un cambio de orden del menú
     case "${opcion}" in
         "Monitorear memoria RAM")  echo; monitorear_ram          ;;

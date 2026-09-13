@@ -317,9 +317,11 @@ El panel se construye con `select`, que se encarga de imprimir el menú y repeti
 se ejecute un `break`. El `case` discrimina sobre el texto que devuelve `select` y no sobre el
 número tecleado, de modo que un cambio en el orden del menú no rompe las ramas.
 
-Dos situaciones requieren atención porque el script no debe abortar: un número fuera de rango,
-que deja la variable vacía y se informa como opción inválida, y un `Ctrl-D`, que deja `REPLY`
-vacío y haría que el menú se repitiera indefinidamente sin forma de cerrarlo.
+El cuerpo del bucle se ejecuta únicamente cuando la entrada es una línea con contenido: ante un
+Enter vacío `select` vuelve a imprimir el menú y lee de nuevo, y ante un fin de entrada
+(`Ctrl-D`) termina el bucle. Ninguno de los dos casos llega al `case`. La única entrada que sí
+lo alcanza y exige validación es un número fuera de rango, que deja vacía la variable del
+`select` y se informa como opción inválida sin interrumpir el menú.
 
 === Código de `monitorear.sh`
 
@@ -409,7 +411,8 @@ instancia en curso, y la segunda ejecución rebota con el mensaje de error y el 
   [`organizador.sh`], [`foto.JPG` en mayúsculas], [A `imagenes/`],
   [`organizador.sh`], [`datos.csv` sin categoría], [A `otros/`],
   [`monitorear.sh`], [Opción fuera de rango (9)], [Aviso, menú sigue],
-  [`monitorear.sh`], [Fin de entrada (`Ctrl-D`)], [Cierra con saludo],
+  [`monitorear.sh`], [Línea vacía (Enter)], [Reimprime el menú],
+  [`monitorear.sh`], [Fin de entrada (`Ctrl-D`)], [Termina el bucle],
   [`chequear_paginas.sh`], [URL que responde 200], [Verde],
   [`chequear_paginas.sh`], [URL que redirige 301], [Amarillo],
   [`chequear_paginas.sh`], [URL inexistente 404], [Rojo],
