@@ -1,0 +1,15 @@
+# sitios_9389.txt - Lista de URL de prueba para chequear_paginas.sh
+# Una URL por linea. Las lineas vacias y las que empiezan con # se ignoran.
+# El set cubre a proposito los cuatro estados que distingue el script.
+
+# 200 - OK (verde)
+https://pedco.uncoma.edu.ar
+
+# 301 - Redireccion permanente hacia HTTPS (amarillo)
+http://www.uncoma.edu.ar
+
+# 404 - Recurso inexistente en un servidor que si responde (rojo)
+https://pedco.uncoma.edu.ar/pagina-inexistente-9389
+
+# 000 - El DNS no resuelve: no hay respuesta HTTP que informar (rojo)
+https://sitio-que-no-existe-9389.uncoma.edu.ar
