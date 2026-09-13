@@ -1,0 +1,12 @@
+═══ Chequeo del 2026-09-13 12:57:08 ═══
+Origen de la lista: /home/rolando/Clases/Admin_Sist_SL_2doAño_2doCua/AutomaScript/tp2-cobis-9389/sitios_9389.txt
+200  OK              https://pedco.uncoma.edu.ar
+301  REDIRIGE        http://www.uncoma.edu.ar
+404  ERROR CLIENTE   https://pedco.uncoma.edu.ar/pagina-inexistente-9389
+000  SIN RESPUESTA   https://sitio-que-no-existe-9389.uncoma.edu.ar
+═══ Chequeo del 2026-09-13 14:50:07 ═══
+Origen de la lista: /home/rolando/Clases/Admin_Sist_SL_2doAño_2doCua/AutomaScript/tp2-cobis-9389/sitios_9389.txt
+200  OK              https://pedco.uncoma.edu.ar
+301  REDIRIGE        http://www.uncoma.edu.ar
+404  ERROR CLIENTE   https://pedco.uncoma.edu.ar/pagina-inexistente-9389
+000  SIN RESPUESTA   https://sitio-que-no-existe-9389.uncoma.edu.ar
