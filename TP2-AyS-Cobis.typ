@@ -385,7 +385,8 @@ guardaría uno solo, en silencio. El empaquetado usa `tar -C` para que el tarbal
 
 La primera ejecución toma el bloqueo, copia los archivos modificados en las últimas 24 horas y
 genera el tarball. A continuación se crea el directorio de bloqueo a mano, simulando una
-instancia en curso, y la segunda ejecución rebota con el mensaje de error y el código 9.
+instancia en curso, y la segunda ejecución rebota con el mensaje de error sin generar ningún
+respaldo.
 
 #figure(
   image("capturas/backup_manager.png", width: 100%),
@@ -418,7 +419,7 @@ instancia en curso, y la segunda ejecución rebota con el mensaje de error y el 
   [`chequear_paginas.sh`], [URL inexistente 404], [Rojo],
   [`chequear_paginas.sh`], [Dominio que no resuelve], [`000`, rojo],
   [`backup_manager.sh`], [Sin `sudo`], [Código 7],
-  [`backup_manager.sh`], [Bloqueo ya tomado], [Código 9],
+  [`backup_manager.sh`], [Bloqueo ya tomado], [Rechaza, sin respaldo],
   [`backup_manager.sh`], [Ejecución normal], [Tarball en `logs/`],
 )
 
