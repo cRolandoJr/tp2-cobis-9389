@@ -5,10 +5,9 @@
 #          1 si el directorio que le paso no existe o no puedo entrar
 
 DIRECTORIO_BASE="${1:-.}"
-INICIALES="RC"          # se omiten los PDF cuyo nombre las contenga
+INICIALES="RC"
 PALABRA_EXCLUIR="excluir"
 
-# ─── Validación del directorio ──────────────────────────────────────────────
 if [ ! -d "${DIRECTORIO_BASE}" ] || [ ! -x "${DIRECTORIO_BASE}" ]; then
     echo "ERROR: '${DIRECTORIO_BASE}' no es un directorio accesible." >&2
     exit 1
@@ -17,18 +16,10 @@ fi
 encontrados=0
 omitidos=0
 
-# ─── Recorrido del árbol ────────────────────────────────────────────────────
-# El find va con -print0 y el read con -d '' porque un nombre de archivo puede
-# tener espacios o saltos de línea. Recorrer la salida de find con un for común
-# parte esos nombres en pedazos y el script termina buscando archivos que no
-# existen.
-while IFS= read -r -d '' archivo; do
+while IFS= read -r -d '' archivo; do          # -print0 y -d '' por los nombres con espacios
     nombre="$(basename "${archivo}")"
 
-    # El filtro es estricto a propósito: compara la cadena exacta "RC", sensible
-    # a mayúsculas. Con "rc" insensible se llevaría puestos archivos legítimos
-    # como "marco.pdf" o "fuentes.pdf", porque el patrón matchea DENTRO de la
-    # palabra.
+    # "RC" exacto y sensible a mayúsculas: con "rc" caerían marco.pdf y fuentes.pdf
     if [[ "${nombre}" == *"${INICIALES}"* || "${nombre}" == *"${PALABRA_EXCLUIR}"* ]]; then
         omitidos=$(( omitidos + 1 ))
         continue
@@ -39,9 +30,7 @@ while IFS= read -r -d '' archivo; do
         continue
     fi
 
-    # La versión viaja en la primera línea de la cabecera, en texto plano:
-    # %PDF-1.4 . El resto del archivo es binario, así que recorto con una
-    # expresión regular en vez de confiar en el corte de línea.
+    # El resto del archivo es binario: recorto con regex en vez de confiar en el corte de línea
     primera_linea="$(head -n 1 "${archivo}" 2>/dev/null)"
 
     if [[ "${primera_linea}" =~ %PDF-([0-9]+\.[0-9]+) ]]; then

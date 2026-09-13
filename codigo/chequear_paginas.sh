@@ -8,26 +8,21 @@
 
 LEGAJO="9389"
 
-# Las rutas se resuelven contra la ubicación del script, no contra el directorio
-# desde el que me invocan: así el log siempre cae en el mismo lugar del
-# repositorio, se corra desde donde se corra.
+# Rutas contra la ubicación del script: el log cae siempre en el repositorio
 DIR_SCRIPT="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 RAIZ_REPO="$(dirname -- "${DIR_SCRIPT}")"
 ARCHIVO_SITIOS="${RAIZ_REPO}/sitios_${LEGAJO}.txt"
 ARCHIVO_LOG="${RAIZ_REPO}/logs/chequeo_${LEGAJO}.log"
 
-TIEMPO_MAXIMO=10        # segundos que espero a cada servidor
+TIEMPO_MAXIMO=10
 
-# ─── Colores ────────────────────────────────────────────────────────────────
-# Solo se emiten si la salida es una terminal. Cuando redirijo a un archivo o a
-# un pipe, las secuencias ANSI quedarían escritas como basura literal.
+# Los colores solo si la salida es terminal: redirigido, el ANSI quedaría como basura literal
 if [ -t 1 ]; then
     VERDE=$'\033[0;32m'; AMARILLO=$'\033[0;33m'; ROJO=$'\033[0;31m'; NEUTRO=$'\033[0m'
 else
     VERDE=""; AMARILLO=""; ROJO=""; NEUTRO=""
 fi
 
-# ─── Armado de la lista de URL ──────────────────────────────────────────────
 urls=()
 
 if [ "$#" -gt 0 ]; then
@@ -39,8 +34,6 @@ else
         echo "Uso: $0 [url ...]" >&2
         exit 1
     fi
-    # Se saltean las líneas vacías y las que empiezan con # , para poder dejar
-    # comentarios dentro del archivo de sitios.
     while IFS= read -r linea; do
         linea="${linea#"${linea%%[![:space:]]*}"}"      # recorta espacios al inicio
         linea="${linea%"${linea##*[![:space:]]}"}"      # y al final
@@ -61,7 +54,6 @@ if ! mkdir -p "$(dirname -- "${ARCHIVO_LOG}")"; then
     exit 1
 fi
 
-# ─── Chequeo ────────────────────────────────────────────────────────────────
 {
     echo "═══ Chequeo del $(date '+%Y-%m-%d %H:%M:%S') ═══"
     echo "Origen de la lista: ${origen}"
@@ -71,18 +63,11 @@ echo "Chequeando ${#urls[@]} sitio(s). Origen: ${origen}"
 echo
 
 for url in "${urls[@]}"; do
-    # Sin -L a propósito: siguiendo las redirecciones vería el 200 del destino
-    # final y el 3xx nunca aparecería. Lo que se pide informar es la respuesta
-    # del servidor consultado, no la del último de la cadena.
+    # Sin -L a propósito: siguiendo la redirección vería el 200 final y el 3xx no aparecería
     codigo="$(curl -s -o /dev/null -w '%{http_code}' --max-time "${TIEMPO_MAXIMO}" "${url}" 2>/dev/null)"
 
-    # curl devuelve 000 cuando no llegó a hablar con nadie: DNS que no resuelve,
-    # conexión rechazada o timeout. No es un código HTTP, es la ausencia de
-    # respuesta, y por eso va en su propia rama y no dentro del 5xx.
-    # Las etiquetas van sin tildes por una razón concreta: printf rellena a
-    # ancho fijo contando BYTES, y en UTF-8 una vocal acentuada ocupa dos. Con
-    # "REDIRECCIÓN" la columna siguiente se corre un lugar y la tabla se
-    # desalinea solo en esa fila.
+    # 000 no es un código HTTP sino la ausencia de respuesta (DNS, timeout): va en su rama
+    # Etiquetas sin tildes: printf rellena contando bytes y en UTF-8 la vocal acentuada ocupa dos
     case "${codigo}" in
         2*)  color="${VERDE}";    estado="OK"            ;;
         3*)  color="${AMARILLO}"; estado="REDIRIGE"      ;;
